@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+    <bpmn2:process id="process-79a08086-c706-40a3-a8c5-07e37417489d" name="mainpart" isExecutable="true">
+        <bpmn2:documentation />
+        <bpmn2:startEvent id="StartEvent_1">
+            <bpmn2:outgoing>SequenceFlow_1fjbwhc</bpmn2:outgoing>
+        </bpmn2:startEvent>
+        <bpmn2:sequenceFlow id="SequenceFlow_1fjbwhc" sourceRef="StartEvent_1" targetRef="ParallelGateway_14a32hy" />
+        <bpmn2:parallelGateway id="ParallelGateway_14a32hy">
+            <bpmn2:incoming>SequenceFlow_1fjbwhc</bpmn2:incoming>
+            <bpmn2:outgoing>SequenceFlow_03r1sbw</bpmn2:outgoing>
+            <bpmn2:outgoing>SequenceFlow_1sbkt2i</bpmn2:outgoing>
+            <bpmn2:outgoing>SequenceFlow_1lys1qb</bpmn2:outgoing>
+        </bpmn2:parallelGateway>
+        <bpmn2:sequenceFlow id="SequenceFlow_03r1sbw" sourceRef="ParallelGateway_14a32hy" targetRef="id первой коммуникации в цепочке" />
+        <bpmn2:sequenceFlow id="SequenceFlow_058o0no" sourceRef="id последней коммуникации в цепочке" targetRef="EndEvent_0nu6bvr" />
+        <bpmn2:sequenceFlow id="SequenceFlow_1sbkt2i" sourceRef="ParallelGateway_14a32hy" targetRef="GoalMonitoringServiceTask" />
+        <bpmn2:serviceTask id="GoalMonitoringServiceTask" name="communicationGoal" implementation="goalcc.monitor">
+            <bpmn2:incoming>SequenceFlow_1sbkt2i</bpmn2:incoming>
+            <bpmn2:outgoing>SequenceFlow_1hhy003</bpmn2:outgoing>
+        </bpmn2:serviceTask>
+        <bpmn2:endEvent id="EndEvent_0nu6bvr">
+            <bpmn2:incoming>SequenceFlow_058o0no</bpmn2:incoming>
+            <bpmn2:incoming>SequenceFlow_1fti00a</bpmn2:incoming>
+            <bpmn2:incoming>SequenceFlow_1sjkw8y</bpmn2:incoming>
+            <bpmn2:terminateEventDefinition />
+        </bpmn2:endEvent>
+        <scriptTask id="Task_0xys82p" scriptFormat="JavaScript" activiti:autoStoreVariables="false">//таска которая пропишет все переменные в случае достижения цели
+            <script>
+                var result = какая-тофункция;
+                execution.setVariable("processStatus", scriptVar);
+            </script>
+        </scriptTask>
+        <bpmn2:sequenceFlow id="SequenceFlow_1hhy003" sourceRef="GoalMonitoringServiceTask" targetRef="Task_0xys82p" />
+        <bpmn2:sequenceFlow id="SequenceFlow_1fti00a" sourceRef="Task_0xys82p" targetRef="EndEvent_0nu6bvr" />
+        <scriptTask id="Task_1lh6n95" scriptFormat="JavaScript" activiti:autoStoreVariables="false">//таска которая пропишет все переменные если процесс затаймаутился
+            <script>
+                var result = какая-тофункция;
+                execution.setVariable("processStatus", scriptVar);
+            </script>
+        </scriptTask>
+        <bpmn2:sequenceFlow id="SequenceFlow_1sjkw8y" sourceRef="Task_1lh6n95" targetRef="EndEvent_0nu6bvr" />
+        <bpmn2:sequenceFlow id="SequenceFlow_1lys1qb" sourceRef="ParallelGateway_14a32hy" targetRef="IntermediateCatchEvent_1ga94is" />
+        <bpmn2:intermediateCatchEvent id="IntermediateCatchEvent_1ga94is">
+            <bpmn2:incoming>SequenceFlow_1lys1qb</bpmn2:incoming>
+            <bpmn2:outgoing>SequenceFlow_15lhrxq</bpmn2:outgoing>
+            <bpmn2:timerEventDefinition>
+                <bpmn2:timeDuration xsi:type="bpmn2:tFormalExpression">P15D</bpmn2:timeDuration>//параметр нудно взять из модели , но там косяк - аналитики поставили endDate а должно быть duration
+            </bpmn2:timerEventDefinition>
+        </bpmn2:intermediateCatchEvent>
+        <bpmn2:sequenceFlow id="SequenceFlow_15lhrxq" sourceRef="IntermediateCatchEvent_1ga94is" targetRef="Task_1lh6n95" />
+    </bpmn2:process>
+</bpmn2:definitions>

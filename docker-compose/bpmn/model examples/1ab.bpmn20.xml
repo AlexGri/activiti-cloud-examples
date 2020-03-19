@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+    <bpmn2:process id="process-80dddcac-67cb-44ba-9f27-4ba9e715cca0" name="abtest" isExecutable="true">
+        <bpmn2:documentation />
+
+        <bpmn2:sequenceFlow id="SequenceFlow_0qwsqfd" sourceRef="айди предыдущего шага или стартового события" targetRef="ServiceTask_0xzknrl" />
+        <serviceTask id="ServiceTask_0xzknrl" name="RollADiceToDecide" implementation="dice.roll"/>
+        <bpmn2:sequenceFlow id="SequenceFlow_1rflko0" sourceRef="ServiceTask_0xzknrl" targetRef="Task_0vpgv84" />
+
+        <scriptTask id="Task_0vpgv84" name="скрипт таск который пропишет переменные процесса" scriptFormat="JavaScript" activiti:autoStoreVariables="false">
+            //abtest_var_output описана в 1ab-extensions.json
+
+            <script>
+                var result = какая-тофункция(abtest_var_output);
+                execution.setVariable("abtest", scriptVar);//типа буква или цифра? наверное доработать rnd генератор чтобы он сразу отдавал N
+            </script>
+        </scriptTask>
+
+        <bpmn2:sequenceFlow id="SequenceFlow_1wdy5vm" sourceRef="Task_0vpgv84" targetRef="ExclusiveGateway_1ox420c" />
+
+        <bpmn2:exclusiveGateway id="ExclusiveGateway_1ox420c">
+            <bpmn2:incoming>SequenceFlow_1wdy5vm</bpmn2:incoming>
+
+            <!-- сгененировать n раз для каждой коммуникации внутри аб теста-->
+            <bpmn2:outgoing>SequenceFlow_1fbngwn</bpmn2:outgoing>
+            <!-- сгененировать -->
+
+        </bpmn2:exclusiveGateway>
+
+
+        <!-- сгененировать n раз для каждой коммуникации внутри аб теста-->
+        <sequenceFlow id="SequenceFlow_1fbngwn" sourceRef="ExclusiveGateway_1ox420c" targetRef="id первого элемента вложенной коммуникации">
+            <conditionExpression xsi:type="tFormalExpression">${abtest == '1'}</conditionExpression>//и так от 1 до n? или удобнее
+        </sequenceFlow>
+        <bpmn2:serviceTask id="id первого элемента вложенной коммуникации" name="коммуникация&#10;сгенерированная по шаблону. может быть несколько элементов&#10;">
+            <bpmn2:incoming>SequenceFlow_1fbngwn</bpmn2:incoming>
+            //если у вложенной коммуникации несколько шагов - то это будет в последнем шаге
+            <bpmn2:outgoing>SequenceFlow_1cy54g0</bpmn2:outgoing>
+        </bpmn2:serviceTask>
+        <bpmn2:sequenceFlow id="SequenceFlow_1cy54g0" sourceRef="ServiceTask_15gn8ia" targetRef="ExclusiveGateway_02jycfu" />
+        <!-- сгененировать -->
+
+
+        <bpmn2:exclusiveGateway id="ExclusiveGateway_02jycfu">
+
+            <!-- сгененировать n раз для каждой коммуникации внутри аб теста-->
+            <bpmn2:incoming>SequenceFlow_1cy54g0</bpmn2:incoming>
+            <!-- сгененировать -->
+
+            <bpmn2:outgoing>SequenceFlow_014dof0</bpmn2:outgoing>
+        </bpmn2:exclusiveGateway>
+
+        //
+        <bpmn2:sequenceFlow id="SequenceFlow_014dof0" sourceRef="ExclusiveGateway_02jycfu" targetRef="первый элемент следующего шага" />
+
+
+    </bpmn2:process>
+    //диаграмму пока не генерируем
+</bpmn2:definitions>

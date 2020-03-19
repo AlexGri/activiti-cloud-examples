@@ -1,0 +1,40 @@
+{
+  "id": "process-79a08086-c706-40a3-a8c5-07e37417489d",
+  "name": "main.bpmn",
+  "version": "0.0.1",
+  "extensions": {
+    "process-79a08086-c706-40a3-a8c5-07e37417489d": {
+
+      "mappings": {
+
+        "GoalMonitoringServiceTask": {
+          "inputs": {
+            "clientId": {
+              "type": "variable",
+              "value": "clientId"
+            },
+            "expression": {
+              "type": "variable",
+              "value": ""//сюда передастся expression из communicationGoal.goalAchievementCondition.conditionObject
+            }
+          },
+          "outputs": {}
+        }
+      },
+      "properties": {
+        "066cac25-b98a-4009-8f43-9034023c3a8a": {
+          "id": "066cac25-b98a-4009-8f43-9034023c3a8a",
+          "name": "processStatus",
+          "type": "string",
+          "required": false
+        },
+        "ee2721de-4ff3-4285-9522-bf272e624f86": {
+          "id": "ee2721de-4ff3-4285-9522-bf272e624f86",
+          "name": "clientId",
+          "type": "string",
+          "required": true
+        }
+      }
+    }
+  }
+}
